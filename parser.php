@@ -51,10 +51,7 @@ foreach ($match[0] as $item) {
 
     //full_text
     preg_match_all('#p\s+[^>]*?class\s*=\s*(["\'])jsx-4083616078\1[^>]*?>(.*?)</p>#su', $content2, $description);
-    $description = $description[2][0];
-
-
-
+    $description = $description[2][1];
 
     if(!check($heading))
     {
@@ -70,29 +67,23 @@ foreach ($match[0] as $item) {
         $query->execute($param);
 
 
-        define('DIRECTORY', '../images/');
-        $save_image = file_get_contents($image);
-        $name_img = str_replace( 'https://dailytargum.imgix.net/images/', '', $image);
-        file_put_contents(DIRECTORY . $name_img, $save_image);
-
 //        define('DIRECTORY', '../images/');
-//
-//
-//        $ch3 = curl_init();
-//        curl_setopt($ch3, CURLOPT_URL, $image);
-//        curl_setopt($ch3, CURLOPT_RETURNTRANSFER, 1);
-//        curl_setopt($ch3, CURLOPT_HEADER, 0);
-//        curl_setopt($ch3, CURLOPT_SSL_VERIFYPEER, false);
-//        curl_setopt($ch3, CURLOPT_SSL_VERIFYHOST, false);
-//        $content3 = curl_exec(($ch3));
-//        curl_close($ch3);
-//
+//        $save_image = file_get_contents($image);
 //        $name_img = str_replace( 'https://dailytargum.imgix.net/images/', '', $image);
-//        file_put_contents(DIRECTORY . $name_img, $content3);
+//
+//        $ch5 = curl_init($image);
+//        $fp = fopen("./images/$name_img", 'wb');
+//        curl_setopt($ch5, CURLOPT_FILE, $fp);
+//        curl_setopt($ch5, CURLOPT_HEADER, 0);
+//        curl_setopt($ch5, CURLOPT_SSL_VERIFYPEER, false);
+//        curl_setopt($ch5, CURLOPT_SSL_VERIFYHOST, false);
+//        curl_exec($ch5);
+//        curl_close($ch5);
+//        fclose($fp);
 
+        header('Location: adminPanel.php');
     }
 }
-
 
 
 function check($head)
@@ -102,3 +93,4 @@ function check($head)
     $f->execute();
     return $f->fetch();
 }
+

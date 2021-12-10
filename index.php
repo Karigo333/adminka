@@ -1,9 +1,28 @@
 <?php
+session_start();
+if (!isset($_SESSION['email']))
+{
+    header("Location: login.php");
+}
 
 require_once "db/db_connect.php";
-require_once "parser.php";
+//require_once "parser.php";
 require_once "db/News.php";
-$news = ((new News(DB::query()))->news);
+$news = new News(DB::query());
+
+
+$page = 1;
+if (isset($_GET['page']))
+{
+    $page = $_GET['page'];
+}
+$pagination = new News();
+--$page;
+$news = $pagination->get(6, $page);
+$newsCount = $pagination->getCount();
+
+
+
 ?>
 
 <!doctype html>
@@ -19,38 +38,47 @@ $news = ((new News(DB::query()))->news);
     <title>Fresh News</title>
 </head>
 <body>
-<div class="navbar navbar-dark bg-dark shadow-sm">
-    <div class="container">
-        <a href="#" class="navbar-brand d-flex align-items-center">
-            <strong>Fresh News</strong>
-
-        </a>
-    </div>
-</div>
+<?php include_once 'header.php';?>
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             <?php
-
             if(!empty($news)):
-                for ($i=0; $i<=2; $i++):?>
+                foreach ($news as $key => $value):?>
                     <div class="col">
-                        <div class="card shadow-sm">
-                            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="<?=$news[$i]['image']?>">
+                        <div class="card shadow-sm h-100">
+                            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="<?=$news[$key]['image']?>">
                             <div class="card-body">
-                                <h2 class="card-text"><?=$news[$i]['heading']?></h2>
-                                <p class="card-text"><?=$news[$i]['description']?></p>
+                                <h2 class="card-text"><?=$news[$key]['heading']?></h2>
+                                <p class="card-text"><?=$news[$key]['description']?></p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted"><?=$news[$i]['data']?></small>
+                                    <small class="text-muted"><?=$news[$key]['data']?></small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php
-                endfor;
-            endif;
-            ?>
+                <?php endforeach; endif; ?>
         </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <?php  for ($i = 1; $i <= 8; $i++):?>
+                    <li class="page-item"><a class="page-link" href="?page=<?= $i?>"><?= $i?></a></li>
+                    <?php endfor; ?>
+                    <li class="page-item">
+                        <a class="page-link" href="<?= $newsCount?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
     </div>
 </div>
 
